@@ -9,7 +9,7 @@
 
     body {
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-      background: #f3f4f6;
+      background: linear-gradient(135deg, #eef2ff 0%, #f3f4f6 50%, #e0f2fe 100%);
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -23,11 +23,23 @@
       width: 100%;
       max-width: 380px;
       padding: 32px;
-      border-radius: 12px;
-      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(37, 99, 235, 0.12), 0 2px 6px rgba(0, 0, 0, 0.05);
     }
 
-    h1 { font-size: 24px; margin-bottom: 6px; }
+    .icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: #eff6ff;
+      color: #2563eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    h1 { font-size: 26px; margin-bottom: 6px; letter-spacing: -0.02em; }
     .subtitle { color: #6b7280; font-size: 14px; margin-bottom: 24px; }
 
     label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px; }
@@ -40,7 +52,26 @@
       border-radius: 8px;
       font-size: 15px;
       margin-bottom: 16px;
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
+
+    .password-wrap { position: relative; }
+    .password-wrap input { padding-right: 60px; }
+
+    .toggle {
+      position: absolute;
+      right: 8px;
+      top: 4px;
+      width: auto;
+      padding: 6px 8px;
+      background: none;
+      color: #6b7280;
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: 6px;
+    }
+
+    .toggle:hover { background: #f3f4f6; color: #111827; }
 
     input:focus {
       outline: none;
@@ -71,9 +102,12 @@
       font-size: 15px;
       font-weight: 600;
       cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
     }
 
     button:hover { background: #1d4ed8; }
+    button:active { transform: scale(0.98); }
+    button:focus-visible { outline: 3px solid rgba(37, 99, 235, 0.35); outline-offset: 2px; }
 
     .error { color: #dc2626; font-size: 13px; margin-bottom: 12px; min-height: 16px; }
 
@@ -82,6 +116,12 @@
 </head>
 <body>
   <main class="card">
+    <div class="icon" aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="4" y="11" width="16" height="10" rx="2"></rect>
+        <path d="M8 11V7a4 4 0 0 1 8 0v4"></path>
+      </svg>
+    </div>
     <h1>Sign in</h1>
     <p class="subtitle">Welcome back! Please enter your details.</p>
 
@@ -90,7 +130,10 @@
       <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" required>
 
       <label for="password">Password</label>
-      <input type="password" id="password" name="password" placeholder="••••••••" autocomplete="current-password" required>
+      <div class="password-wrap">
+        <input type="password" id="password" name="password" placeholder="••••••••" autocomplete="current-password" required>
+        <button type="button" class="toggle" id="toggle-password" aria-label="Show password">Show</button>
+      </div>
 
       <div class="row">
         <label><input type="checkbox" name="remember"> Remember me</label>
@@ -106,6 +149,15 @@
   </main>
 
   <script>
+    const passwordInput = document.getElementById("password");
+    const toggleBtn = document.getElementById("toggle-password");
+    toggleBtn.addEventListener("click", function () {
+      const show = passwordInput.type === "password";
+      passwordInput.type = show ? "text" : "password";
+      toggleBtn.textContent = show ? "Hide" : "Show";
+      toggleBtn.setAttribute("aria-label", show ? "Hide password" : "Show password");
+    });
+
     document.getElementById("signin-form").addEventListener("submit", function (e) {
       e.preventDefault();
       const email = document.getElementById("email").value.trim();
